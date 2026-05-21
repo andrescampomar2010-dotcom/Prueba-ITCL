@@ -1,0 +1,25 @@
+# Entorno y secretos
+.env
+*.local.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Datos generados en tiempo de ejecución
+data/chroma/
+data/index/
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db

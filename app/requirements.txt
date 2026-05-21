@@ -1,0 +1,13 @@
+# Dependencias del cliente/orquestador.
+# Rangos acotados: garantizan la instalación y, a la vez, evitan saltos de
+# versión "major" que rompen la API usada por el código (p. ej. chromadb 1.x
+# o mcp 1.9+ cambian APIs de las que depende este proyecto).
+streamlit>=1.38,<2.0
+openai>=1.40,<2.0
+chromadb>=0.5.5,<0.6.0
+pypdf>=4.3,<6.0
+mcp>=1.2.0,<1.4.0
+reportlab>=4.0,<5.0
+numpy>=1.26,<2.0
+pydantic>=2.5,<3.0
+pytest>=8.0,<9.0

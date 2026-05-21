@@ -1,0 +1,3 @@
+# Este directorio contiene el corpus de PDFs.
+# El PDF de ejemplo se genera durante el build de Docker y se copia aquí
+# en el primer arranque. También puedes generarlo con: make sample-pdf

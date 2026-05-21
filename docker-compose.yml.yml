@@ -1,0 +1,47 @@
+# Asistente RAG jerárquico + MCP
+# Arranque:  cp .env.example .env  &&  docker compose up --build
+# UI:        http://localhost:8501
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: mcp_server/Dockerfile
+    container_name: rag-mcp-server
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    container_name: rag-mcp-app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      # En la red de Docker el servidor MCP se resuelve por nombre de servicio.
+      - MCP_SERVER_URL=http://mcp-server:8000
+      - DATA_DIR=/data
+      - LOG_LEVEL=INFO
+    volumes:
+      # Persistencia: índice vectorial, PDFs subidos y logs sobreviven reinicios.
+      - rag-data:/data
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  rag-data:
