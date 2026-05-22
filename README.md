@@ -1,4 +1,4 @@
-# Asistente RAG jerárquico + MCP
+## Asistente RAG jerárquico + MCP
 
 Asistente conversacional **en español** que responde preguntas apoyándose en un
 **RAG jerárquico sobre PDF** y, cuando procede, llama **herramientas externas
@@ -299,7 +299,7 @@ Flexibilidad para añadir nuevas tools sin tocar el código del cliente.
 Soporta naturalmente el caso BOTH (ej: extraer una cifra del PDF y convertirla con fx_rate).
 Total trazabilidad: se registra la decisión del router, las tools llamadas y los chunks recuperados.
 
-## 10. Limitaciones
+## 11. Limitaciones
 
 - Se asume **PDF con texto seleccionable** (sin OCR), según el alcance del
   enunciado. Un PDF escaneado no se indexará correctamente.
