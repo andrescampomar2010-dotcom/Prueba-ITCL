@@ -95,37 +95,15 @@ def test_end_to_end_vector_search(temp_vectorstore, temp_parentstore):
         assert "parent_id" in result
 
 
-def test_end_to_end_orchestrator_rag(temp_vectorstore, temp_parentstore):
-    """Verifica que el orquestador puede ejecutar un flujo RAG completo."""
-    # Setup: PDF indexado
-    pages = [
-        "Política: Los empleados reciben 20 días de vacaciones anuales.",
-        "Los días no utilizados se pierden al final del año.",
-    ]
-    
-    doc = chunk_document(pages, source="manual.pdf", parent_size=150, parent_overlap=15,
-                         child_size=60, child_overlap=5)
-    
-    temp_parentstore.add_parents(doc.parents)
-    temp_vectorstore.add_children(doc.children)
-    
-    # Crear orquestador
+def test_end_to_end_orchestrator_se_construye(temp_vectorstore, temp_parentstore):
+    """Smoke test: el orquestador se instancia sin errores con almacenes reales.
+
+    No invoca al LLM (eso requeriría clave OpenAI). Solo comprueba que la
+    composición de almacenes + orquestador es válida.
+    """
     orchestrator = Orchestrator(temp_vectorstore, temp_parentstore)
-    
-    # Hacer una pregunta (requiere LLM, así que solo verificamos estructura)
-    # En un test verdadero, mockaríamos el LLM
-    try:
-        answer = orchestrator.answer("¿Cuántos días de vacaciones?")
-        
-        # Verificar estructura del resultado
-        assert isinstance(answer.text, str)
-        assert answer.route in ("RAG", "TOOL", "BOTH", "NONE")
-        assert isinstance(answer.citations, list)
-        assert isinstance(answer.trace, dict)
-    except Exception as exc:
-        # El LLM podría no estar disponible, así que solo verificamos que
-        # la estructura del código es correcta
-        assert "LLM" in str(exc) or "API" in str(exc), f"Error inesperado: {exc}"
+    assert orchestrator.vs is temp_vectorstore
+    assert orchestrator.ps is temp_parentstore
 
 
 def test_end_to_end_multiple_pdfs(temp_vectorstore, temp_parentstore):
