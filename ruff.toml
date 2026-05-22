@@ -1,0 +1,16 @@
+# Configuración de Ruff — linter y formateador para Python
+# Ejecutar: pip install ruff && ruff check app/ mcp_server/
+
+line-length = 100
+target-version = "py311"
+exclude = ["__pycache__", ".venv", "data/"]
+
+[lint]
+# E/W = errores y warnings de estilo (PEP8)
+# F   = errores de lógica (variables no usadas, imports no usados)
+# I   = orden de imports
+select = ["E", "W", "F", "I"]
+
+# BLE001 = no usar except genérico — hay casos justificados en este código
+# E501   = línea demasiado larga — ya controlado por line-length
+ignore = ["BLE001", "E501"]
