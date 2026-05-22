@@ -266,40 +266,8 @@ Ejecución: `make test` (dentro del contenedor) o `make test-local`
 
 ---
 
-## 10. Estrategia de Enrutado (Router RAG vs Tools)
-El sistema implementa un enrutado inteligente que decide dinámicamente si responder una pregunta utilizando:
-- **Solo RAG (documentación interna del PDF)**;
-- **Solo Tools (herramientas externas vía MCP)**;
-- **Both (RAG + Tool)**;
-- **None (no se puede responder)**;
 
-Enfoque técnico elegido
-Se ha optado por Tool Calling nativo del LLM (function calling) como estrategia principal, combinado con un fallback basado en análisis de intención.
-- **Funcionamiento paso a paso:**
-Descubrimiento dinámico de tools
-Al iniciar la aplicación, el cliente se conecta al servidor MCP mediante SSE y obtiene la lista completa de herramientas disponibles junto con sus esquemas JSON (input_schema). De esta forma, ninguna tool está hardcodeada en el cliente.
-Construcción del prompt del router
-Para cada pregunta del usuario, se construye un prompt que incluye:
-La pregunta del usuario
-Descripción de todas las tools disponibles (nombre + descripción)
-Instrucciones claras sobre cuándo usar RAG, Tools o ambos
-Decisión mediante Function Calling
-Se envía al LLM una llamada con las tools disponibles (market_status, fx_rate, etc.) más una tool virtual interna llamada retrieve_documents (que representa el RAG).
-El modelo decide automáticamente qué tools llamar (o ninguna).
-Lógica de ejecución
-Si el LLM decide llamar a retrieve_documents → se ejecuta el RAG jerárquico.
-Si decide llamar a una o varias tools MCP → se ejecutan las tools correspondientes.
-Si decide ambas → se ejecutan en paralelo (RAG + Tools).
-Si no llama a ninguna → se responde con un mensaje claro indicando que no se dispone de información suficiente.
-Fallback de seguridad
-En caso de que el function calling falle o el modelo no decida correctamente, existe un fallback basado en keywords + verificación secundaria del LLM para evitar respuestas sin fuente.
-Ventajas de este enfoque
-Mayor precisión que un clasificador binario simple.
-Flexibilidad para añadir nuevas tools sin tocar el código del cliente.
-Soporta naturalmente el caso BOTH (ej: extraer una cifra del PDF y convertirla con fx_rate).
-Total trazabilidad: se registra la decisión del router, las tools llamadas y los chunks recuperados.
-
-## 11. Limitaciones
+## 10. Limitaciones
 
 - Se asume **PDF con texto seleccionable** (sin OCR), según el alcance del
   enunciado. Un PDF escaneado no se indexará correctamente.
