@@ -124,15 +124,20 @@ def test_parse_contenido_vacio_lanza_error():
     with pytest.raises(ValueError):
         mcp_client.parse_tool_payload(res)
 
-
 # --------------------------------------------------------------------------
 # Integración: descubrimiento de tools desde el servidor MCP
 # --------------------------------------------------------------------------
 def test_mcp_tools_discovered():
-    """Verifica que se puedan descubrir las tools desde el servidor MCP."""
-    # Este test espera que el servidor MCP esté corriendo en http://mcp-server:8000
-    # En CI/local, ajustar según la URL del servidor.
-    tools = mcp_client.discover_tools()
+    """Verifica que se puedan descubrir las tools desde el servidor MCP.
+
+    Se salta automáticamente si el servidor MCP no está disponible
+    (p. ej. tests locales sin docker-compose levantado).
+    """
+    health = mcp_client.server_health()
+    if not health.get("ok"):
+        pytest.skip("Servidor MCP no disponible; se omite el test de integración.")
+
+    tools = mcp_client.discover_tools(force=True)
     tool_names = [t.name for t in tools]
     assert "fx_rate" in tool_names
     assert "market_status" in tool_names
