@@ -24,5 +24,11 @@ jobs:
           pip install -r app/requirements.txt
           pip install -r mcp_server/requirements.txt
 
+          - name: Instalar Ruff
+        run: pip install ruff
+
+      - name: Comprobar estilo de código
+        run: ruff check app/ mcp_server/ --output-format=github
+
       - name: Ejecutar tests
         run: python -m pytest app/tests -v --tb=short
