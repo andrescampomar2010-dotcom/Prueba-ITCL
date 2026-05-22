@@ -1,6 +1,7 @@
 # Entorno y secretos
 .env
 *.local.env
+.env.local
 
 # Python
 __pycache__/
@@ -9,17 +10,35 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+*.pyc
 
-# Datos generados en tiempo de ejecución
-data/chroma/
-data/index/
+# Datos generados (muy importante)
+data/
+chroma/
+index/
 *.sqlite
 *.sqlite3
+vectorstore/
+*.chroma
 
 # Logs
 logs/
 *.log
 
-# Sistema
+# Streamlit
+.streamlit/secrets.toml
+
+# Docker y entornos
+.docker/
+*.dockerignore
+
+# Editor / Sistema
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+
+# Tests y coverage
+.coverage
+htmlcov/
+.tox/
